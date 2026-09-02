@@ -513,6 +513,12 @@
     colorInputBg.value = colors.inputBg;
     colorAccent.value = colors.accent;
     colorText.value = colors.text;
+
+    // Keep the browser/OS chrome (status bar, task-switcher card, address
+    // bar strip) in sync too - the theme-color meta tag is otherwise static
+    // and would stay on the original dark value regardless of the preset.
+    var themeMeta = document.querySelector('meta[name="theme-color"]');
+    if(themeMeta) themeMeta.setAttribute('content', colors.bg);
   }
 
   function saveColors(colors){
