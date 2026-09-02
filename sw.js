@@ -1,5 +1,5 @@
 // Bump this on every deploy so old clients pick up the new cache and shed the old one.
-const CACHE_VERSION = 'linear-converter-v1';
+const CACHE_VERSION = 'linear-converter-v2';
 
 const APP_SHELL = [
   './',
@@ -11,9 +11,21 @@ const APP_SHELL = [
 ];
 
 // Cache the app shell up front so the first offline load has something to show.
+// Cached individually (not cache.addAll) so one missing/renamed file - e.g. a
+// filename casing mismatch, which is easy to hit deploying from Windows
+// (case-insensitive) to GitHub Pages (case-sensitive) - doesn't abort the
+// whole install and leave the service worker stuck failing to register.
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_VERSION).then((cache) => cache.addAll(APP_SHELL))
+    caches.open(CACHE_VERSION).then((cache) => {
+      return Promise.all(
+        APP_SHELL.map((url) =>
+          cache.add(url).catch((err) => {
+            console.warn('Service worker: could not cache', url, err);
+          })
+        )
+      );
+    })
   );
   self.skipWaiting();
 });
@@ -47,6 +59,21 @@ self.addEventListener('fetch', (event) => {
         caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, copy));
         return networkResponse;
       })
-      .catch(() => caches.match(event.request).then((cached) => cached || caches.match('./index.html')))
+      .catch(() =>
+        caches.match(event.request).then((cached) => {
+          if (cached) return cached;
+          return caches.match('./index.html').then((shell) => {
+            if (shell) return shell;
+            // nothing cached at all (e.g. very first load, offline, cache
+            // failed) - fail the request explicitly rather than resolving
+            // to undefined, which the Fetch API can't handle.
+            return new Response('Offline and no cached copy available.', {
+              status: 503,
+              statusText: 'Offline',
+              headers: { 'Content-Type': 'text/plain' }
+            });
+          });
+        })
+      )
   );
 });

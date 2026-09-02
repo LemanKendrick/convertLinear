@@ -589,9 +589,12 @@
   // ---- register service worker for offline / installable support ----
   if('serviceWorker' in navigator){
     window.addEventListener('load', function(){
-      navigator.serviceWorker.register('sw.js').catch(function(err){
-        // registration can fail harmlessly when previewed from file:// or a sandboxed frame
-        console.warn('Service worker registration failed:', err);
+      navigator.serviceWorker.register('sw.js', { scope: './' }).then(function(reg){
+        console.log('Service worker registered, scope:', reg.scope);
+      }).catch(function(err){
+        // registration can fail harmlessly when previewed from file:// or a sandboxed frame -
+        // logging the message/name here makes it easy to diagnose from a real deploy if it recurs
+        console.warn('Service worker registration failed:', err && err.name, err && err.message);
       });
     });
   }
