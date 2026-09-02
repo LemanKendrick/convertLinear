@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Linear Unit Converter</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1b1d22">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Unit Conv">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <style>
   :root{
     --bg:#1b1d22;
@@ -535,7 +544,7 @@
 
   var PRESETS = {
     dark: { bg:'#1b1d22', card:'#25282f', accent:'#5aa9ff', text:'#eef1f5' },
-    light:{ bg:'#f2f3f5', card:'#ffffff', accent:'#2563eb', text:'#1b1d22' },
+    light:{ bg:'#f2f3f5', card:'#ffffff', accent:'#2563eb', text:'#ffffff' },
     workshop:{ bg:'#1c1712', card:'#2a231b', accent:'#e8871e', text:'#f5efe6' }
   };
 
@@ -566,6 +575,16 @@
 
   // ---- initial paint ----
   refreshAll(null);
+
+  // ---- register service worker for offline / installable support ----
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('sw.js').catch(function(err){
+        // registration can fail harmlessly when previewed from file:// or a sandboxed frame
+        console.warn('Service worker registration failed:', err);
+      });
+    });
+  }
 })();
 </script>
 
