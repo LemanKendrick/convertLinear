@@ -259,6 +259,14 @@
   </div>
 </div>
 
+<div class="card">
+  <span class="label">Decimal Feet</span>
+  <div class="row">
+    <input type="text" inputmode="decimal" id="decFeetIn" value="0">
+    <span class="unit-suffix">ft</span>
+  </div>
+</div>
+
 <button type="button" class="reset-btn" id="resetBtn">Reset to 0</button>
 
 <button type="button" class="settings-toggle" id="settingsToggle">&#9881; Appearance</button>
@@ -305,6 +313,7 @@
   var fracNum = document.getElementById('fracNum');
   var fracDenomDisplay = document.getElementById('fracDenomDisplay');
   var precisionHint = document.getElementById('precisionHint');
+  var decFeetIn = document.getElementById('decFeetIn');
   var feetIn = document.getElementById('feetIn');
   var feetInchWhole = document.getElementById('feetInchWhole');
   var feetInchNum = document.getElementById('feetInchNum');
@@ -358,6 +367,9 @@
     if(skip !== 'dec'){
       decIn.value = round(totalInches, 4).toString();
     }
+    if(skip !== 'decft'){
+      decFeetIn.value = round(totalInches / 12, 5).toString();
+    }
     if(skip !== 'mm'){
       mmIn.value = round(totalInches * 25.4, 2).toString();
     }
@@ -388,6 +400,14 @@
     if(!isNaN(v)){
       totalInches = v;
       refreshAll('dec');
+    }
+  });
+
+  decFeetIn.addEventListener('input', function(){
+    var v = parseNum(decFeetIn.value);
+    if(!isNaN(v)){
+      totalInches = v * 12;
+      refreshAll('decft');
     }
   });
 
