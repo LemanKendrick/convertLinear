@@ -1,5 +1,5 @@
 // Bump this on every deploy so old clients pick up the new cache and shed the old one.
-const CACHE_VERSION = 'linear-converter-v2';
+const CACHE_VERSION = 'linear-converter-v3';
 
 const APP_SHELL = [
   './',

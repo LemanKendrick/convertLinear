@@ -204,7 +204,7 @@
     padding:9px 4px;
     border-radius:8px;
     border:1px solid var(--border);
-    background:#15171b;
+    background:var(--input-bg);
     color:var(--text);
     font-size:0.8rem;
     cursor:pointer;
@@ -580,7 +580,7 @@
 
   var PRESETS = {
     dark: { bg:'#1b1d22', card:'#25282f', inputBg:'#15171b', accent:'#5aa9ff', text:'#eef1f5' },
-    light:{ bg:'#f2f3f5', card:'#ffffff', inputBg:'#e6e8eb', accent:'#2563eb', text:'#ffffff' },
+    light:{ bg:'#f2f3f5', card:'#ffffff', inputBg:'#e6e8eb', accent:'#2563eb', text:'#1b1d22' },
     workshop:{ bg:'#1c1712', card:'#2a231b', inputBg:'#171310', accent:'#e8871e', text:'#f5efe6' }
   };
 
@@ -602,11 +602,22 @@
   });
 
   settingsToggle.addEventListener('click', function(){
-    settingsPanel.classList.toggle('open');
+    var isOpen = settingsPanel.classList.toggle('open');
+    // the toggle sits near the bottom of the page on a phone, so the panel
+    // opens off-screen - bring it into view so the tap visibly does something
+    if(isOpen){
+      settingsPanel.scrollIntoView({ behavior:'smooth', block:'end' });
+    }
   });
 
   // apply any saved colors on load
   var saved = loadSavedColors();
+  // repair colors saved from the old Light preset (white text on white card)
+  if(saved && saved.text && saved.card &&
+     saved.text.toLowerCase() === saved.card.toLowerCase()){
+    saved.text = (saved.card.toLowerCase() === '#ffffff') ? PRESETS.light.text : DEFAULT_COLORS.text;
+    saveColors(saved);
+  }
   if(saved) applyColors(saved);
 
   // ---- initial paint ----
