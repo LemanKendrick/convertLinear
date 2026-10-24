@@ -20,6 +20,7 @@
     --accent:#5aa9ff;
     --text:#eef1f5;
     --sub:#9aa2ad;
+    --label:#9aa2ad;
     --border:#3a3e46;
     --input-bg:#15171b;
   }
@@ -49,7 +50,7 @@
     font-size:0.8rem;
     text-transform:uppercase;
     letter-spacing:0.04em;
-    color:var(--sub);
+    color:var(--label);
     margin-bottom:8px;
     display:block;
   }
@@ -73,7 +74,7 @@
   }
   .row input{ min-width:0; }
   .unit-suffix{
-    color:var(--sub);
+    color:var(--label);
     font-size:1rem;
     white-space:nowrap;
   }
@@ -87,7 +88,7 @@
   .frac-row .num{ flex:1; }
   .frac-slash{
     font-size:1.4rem;
-    color:var(--sub);
+    color:var(--label);
     padding:0 2px;
   }
   .frac-denom{
@@ -131,7 +132,7 @@
   }
   .feet-mark{
     font-size:1.1rem;
-    color:var(--sub);
+    color:var(--label);
     white-space:nowrap;
   }
   .reset-btn{
@@ -282,6 +283,10 @@
   <div class="color-row">
     <span>Input Background</span>
     <input type="color" id="colorInputBg" value="#15171b">
+  </div>
+  <div class="color-row">
+    <span>Labels &amp; Units</span>
+    <input type="color" id="colorLabel" value="#9aa2ad">
   </div>
   <div class="color-row">
     <span>Accent</span>
@@ -509,7 +514,7 @@
   });
 
   // ---- appearance / color customization ----
-  var DEFAULT_COLORS = { bg:'#1b1d22', card:'#25282f', inputBg:'#15171b', accent:'#5aa9ff', text:'#eef1f5' };
+  var DEFAULT_COLORS = { bg:'#1b1d22', card:'#25282f', inputBg:'#15171b', label:'#9aa2ad', accent:'#5aa9ff', text:'#eef1f5' };
   var STORAGE_KEY = 'linearConverterColors';
 
   var settingsToggle = document.getElementById('settingsToggle');
@@ -517,20 +522,25 @@
   var colorBg = document.getElementById('colorBg');
   var colorCard = document.getElementById('colorCard');
   var colorInputBg = document.getElementById('colorInputBg');
+  var colorLabel = document.getElementById('colorLabel');
   var colorAccent = document.getElementById('colorAccent');
   var colorText = document.getElementById('colorText');
   var resetColorsBtn = document.getElementById('resetColorsBtn');
   var root = document.documentElement;
 
   function applyColors(colors){
+    // colors saved before the Labels & Units option existed have no label key
+    if(!colors.label) colors.label = DEFAULT_COLORS.label;
     root.style.setProperty('--bg', colors.bg);
     root.style.setProperty('--card', colors.card);
     root.style.setProperty('--input-bg', colors.inputBg);
+    root.style.setProperty('--label', colors.label);
     root.style.setProperty('--accent', colors.accent);
     root.style.setProperty('--text', colors.text);
     colorBg.value = colors.bg;
     colorCard.value = colors.card;
     colorInputBg.value = colors.inputBg;
+    colorLabel.value = colors.label;
     colorAccent.value = colors.accent;
     colorText.value = colors.text;
 
@@ -562,6 +572,7 @@
       bg: colorBg.value,
       card: colorCard.value,
       inputBg: colorInputBg.value,
+      label: colorLabel.value,
       accent: colorAccent.value,
       text: colorText.value
     };
@@ -575,13 +586,14 @@
   colorBg.addEventListener('input', onColorInputChange);
   colorCard.addEventListener('input', onColorInputChange);
   colorInputBg.addEventListener('input', onColorInputChange);
+  colorLabel.addEventListener('input', onColorInputChange);
   colorAccent.addEventListener('input', onColorInputChange);
   colorText.addEventListener('input', onColorInputChange);
 
   var PRESETS = {
-    dark: { bg:'#1b1d22', card:'#25282f', inputBg:'#15171b', accent:'#5aa9ff', text:'#eef1f5' },
-    light:{ bg:'#f2f3f5', card:'#ffffff', inputBg:'#e6e8eb', accent:'#2563eb', text:'#1b1d22' },
-    workshop:{ bg:'#1c1712', card:'#2a231b', inputBg:'#171310', accent:'#e8871e', text:'#f5efe6' }
+    dark: { bg:'#1b1d22', card:'#25282f', inputBg:'#15171b', label:'#9aa2ad', accent:'#5aa9ff', text:'#eef1f5' },
+    light:{ bg:'#f2f3f5', card:'#ffffff', inputBg:'#e6e8eb', label:'#5b6370', accent:'#2563eb', text:'#1b1d22' },
+    workshop:{ bg:'#1c1712', card:'#2a231b', inputBg:'#171310', label:'#b9a68c', accent:'#e8871e', text:'#f5efe6' }
   };
 
   var presetButtons = document.querySelectorAll('.preset-btn');
