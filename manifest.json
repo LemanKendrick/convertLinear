@@ -1,6 +1,7 @@
 {
   "name": "Linear Unit Converter",
   "short_name": "Unit Conv",
+  "id": "convertlinear",
   "description": "Convert between decimal inches, millimeters, fractional inches, and feet-inches.",
   "start_url": "./index.html",
   "scope": "./",
